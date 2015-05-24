@@ -1,0 +1,48 @@
+
+.station, .stop, .transfer {
+    fill: white;
+}
+
+.name {
+    alignment-baseline: central;
+    text-anchor: middle;
+    font-family: "Droid Sans";
+}
+
+.line {
+    stroke-linecap: round;
+    stroke: black;
+}
+.linehollow.trolley {
+    stroke: white;
+    stroke-width: 0.5px;
+    stroke-linecap: round;
+    fill: none;
+}
+.linehollow.lrv {
+    stroke: none;
+    stroke-width: 0;
+    fill: none;
+}
+
+.line-1 {
+    stroke: #d31245;
+}
+.line-2 {
+    stroke: #ffcc00;
+}
+.line-3 {
+    stroke: #008752;
+}
+.line-4 {
+    stroke: #569bbe;
+}
+.line-5 {
+    stroke: #00539b;
+}
+.line-6 {
+    stroke: #92278f;
+}
+.line-56 {
+    stroke: #faa634;
+}
