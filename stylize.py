@@ -3,6 +3,29 @@ import dxfgrabber
 import svgwrite
 import math
 
+# We use DXF colors as a proxy for line designation.
+# These don't necessarily match the colors we'll use in the final
+# rendered map, but they are kept close for ease of editing.
+line_color_map = {
+    5: "A",
+    3: "B",
+    7: "G",
+    2: "K",
+    6: "S",
+    1: "T",
+    56: "U",
+    211: "V",
+    40: "R",
+    4: "C",
+    253: "E",
+    136: "F",
+    176: "J",
+    9: "L",
+    16: "M",
+    8: "N",
+    216: "O",
+}
+
 dxf = dxfgrabber.readfile("map.dxf")
 svg = svgwrite.Drawing()
 
@@ -31,23 +54,19 @@ stopsym.add(svg.rect(
 ))
 svg.add(stopsym)
 
-transfer2sym = svg.symbol(id="transfer2")
-transfer2sym.add(svg.rect(
-    insert=("0", "%fpx" % -station_radius),
-    size=("%fpx" % line_thickness, "%fpx" % (station_radius * 2.0)),
-    class_="transfer",
-))
-svg.add(transfer2sym)
-
 outergrp = svg.g(transform="scale(1,-1)")
 linegrp = svg.g(id="lines")
 linehollowgrp = svg.g(id="linehollows")
 stngrp = svg.g(id="stations")
+transfergrp = svg.g(id="transfers")
+transferhollowgrp = svg.g(id="transferhollows")
 namegrp = svg.g(id="names")
 
 outergrp.add(linegrp)
 outergrp.add(linehollowgrp)
 outergrp.add(stngrp)
+outergrp.add(transfergrp)
+outergrp.add(transferhollowgrp)
 outergrp.add(namegrp)
 svg.add(outergrp)
 
@@ -58,15 +77,34 @@ def px(val):
 
 for entity in dxf.entities:
     color = entity.color
+    line_letter = line_color_map.get(color, "invalid")
     vehicleclass = "trolley" if entity.linetype == "DASHED" else "lrv"
     if isinstance(entity, dxfgrabber.entities.Line):
+        if entity.layer == "Transfers":
+            # Lines on the "Transfers" layer become transfer paths rather
+            # than line shapes.
+            path_data = "M %f,%f L %f,%f" % (
+                entity.start[0], entity.start[1],
+                entity.end[0], entity.end[1],
+            ),
+            transfergrp.add(svg.path(
+                path_data,
+                class_="transfer",
+                stroke_width="%fpx" % (line_thickness),
+            ))
+            transferhollowgrp.add(svg.path(
+                path_data,
+                class_="transferhollow",
+                stroke_width="%fpx" % (station_radius * 2.0),
+            ))
+            continue
         path_data = "M %f,%f L %f,%f" % (
             entity.start[0], entity.start[1],
             entity.end[0], entity.end[1],
         )
         linegrp.add(svg.path(
             path_data,
-            class_="line line-%d %s" % (color, vehicleclass),
+            class_="line line-%s %s" % (line_letter, vehicleclass),
             stroke_width="%fpx" % line_thickness,
         ))
         linehollowgrp.add(svg.path(
@@ -94,7 +132,7 @@ for entity in dxf.entities:
         )
         linegrp.add(svg.path(
             path_data,
-            class_="line line-%d %s" % (color, vehicleclass),
+            class_="line line-%s %s" % (line_letter, vehicleclass),
             stroke_width="%fpx" % line_thickness,
         ))
         linehollowgrp.add(svg.path(
@@ -113,12 +151,6 @@ for entity in dxf.entities:
         elif etype == "STOP":
             stngrp.add(svg.use(
                 stopsym,
-                insert=(px(entity.insert[0]), px(entity.insert[1])),
-                transform="rotate(%f %f %f)" % (rotation, entity.insert[0], entity.insert[1]),
-            ))
-        elif etype == "TRANSFER2":
-            stngrp.add(svg.use(
-                transfer2sym,
                 insert=(px(entity.insert[0]), px(entity.insert[1])),
                 transform="rotate(%f %f %f)" % (rotation, entity.insert[0], entity.insert[1]),
             ))

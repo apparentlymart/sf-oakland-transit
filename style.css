@@ -1,6 +1,16 @@
 
-.station, .stop, .transfer {
+.station, .stop {
     fill: white;
+}
+.transfer {
+    stroke: black;
+    fill: none;
+    stroke-linecap: round;
+}
+.transferhollow {
+    stroke: white;
+    fill: none;
+    stroke-linecap: round;
 }
 
 .name {
@@ -25,24 +35,58 @@
     fill: none;
 }
 
-.line-1 {
-    stroke: #d31245;
+.line-A {
+    stroke: #0098D4;
 }
-.line-2 {
-    stroke: #ffcc00;
+.line-B {
+    stroke: #00782A;
 }
-.line-3 {
-    stroke: #008752;
+.line-G {
+    stroke: #000000;
 }
-.line-4 {
-    stroke: #569bbe;
+.line-K {
+    stroke: #FFD300;
 }
-.line-5 {
-    stroke: #00539b;
+.line-R {
+    stroke: #EE7C0E;
 }
-.line-6 {
-    stroke: #92278f;
+.line-S {
+    stroke: #9B0056;
 }
-.line-56 {
-    stroke: #faa634;
+.line-T {
+    stroke: #E32017;
+}
+.line-U {
+    stroke: #B36305;
+}
+.line-V {
+    stroke: #F3A9BB;
+}
+
+.line-C {
+    stroke: #95CDBA;
+}
+.line-E {
+    stroke: #A0A5A9;
+}
+.line-F {
+    stroke: #00A4A7;
+}
+.line-J {
+    stroke: #003688;
+}
+.line-L {
+    stroke: #84B817;
+}
+.line-M {
+    stroke: #E21836;
+}
+.line-N {
+    stroke: #66CCCC;
+}
+.line-O {
+    stroke: #7156A5;
+}
+.line-P {
+    stroke: #333366;
 }
