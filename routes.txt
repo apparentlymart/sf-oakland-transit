@@ -1,0 +1,24 @@
+
+A	Blue	Temescal, Pill Hill, Downtown Oakland, Jack London Square, West Alameda, South Beach, Union Square, Japantown
+B	Green	East Dublin, Coliseum, West Alameda, South Beach, Union Square, Japantown, Laurel Heights
+K	Yellow	Richmond City, Temescal, Pill Hill, Downtown Oakland, West Oakland, Federal Reserve Bank, Union Square, Civic Center, West SoMa, South Noe Valley, Balboa Park, San Bruno, San Francisco Airport
+R	Orange	Richmond City, Temescal, Pill Hill, Downtown Oakland, Lake Merritt, Coliseum, Bay Fair, Fremont
+S	Magenta	Parkmerced, St Francis Circle, West Portal, Duboce Triangle, Union Square, Federal Reserve Bank
+T	Red	San Rafael, Marina, Union Square, South Beach, San Francisco Airport
+U	Brown	Bay Point, Temescal, Pill Hill, Downtown Oakland, West Oakland, Federal Reserve Bank, Union Square, Civic Center, West SoMa, South Noe Valley, Balboa Park, Daly City
+V	Pink	Duboce Triangle, West SoMa, South Beach, Rincon Park, Federal Reserve Bank, Union Square, Civic Center, Duboce Triangle
+
+Streetcar/BRT lines:
+C	Cyan	(Piedmont Streetcar) Aquatic Park, Temescal, Trestle Glen
+E	Grey	(Embarcadero Streetcar) Fort Point, Ferry Building, Rincon Park
+F	Dk Cyan	(Market and Wharves Streetcar) Castro, Duboce Triangle, Union Square, Federal Reserve Bank, Ferry Building, Fisherman's Wharf
+J	Dk Blue	(Fillmore Streetcar) St Francis Circle, Balboa Park, South Noe Valley, Duboce Triangle, Japantown, Marina
+L	Lt Grey	(Bayside Streetcar) West Portal, Fleishacker
+M	Dk Red	(Parkmerced Streetcar) Parkmerced, Balboa Park, South Noe Valley, Duboce Triangle
+N	Dk Grey	(Sunset Streetcar) La Playa, Duboce Triangle
+O	Dk Mgta	(Oakland Streetcar) Mosswood Park, Pill Hill, Uptown Oakland, Downtown Oakland, Jack London Square
+P	Dk Grey (Potrero Streetcar) South Beach, Showplace Square, Bayshore
+
+
+Market Street: FSKUV
+
