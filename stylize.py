@@ -75,10 +75,18 @@ def px(val):
     return "%fpx" % val
 
 
+outline_coords = [0, 0, 0, 0]
+
+
 for entity in dxf.entities:
     color = entity.color
     line_letter = line_color_map.get(color, "invalid")
     vehicleclass = "trolley" if entity.linetype == "DASHED" else "lrv"
+
+    if entity.layer in ("Coastline", "Nature"):
+        # Don't know how to render these yet
+        continue
+
     if isinstance(entity, dxfgrabber.entities.Line):
         if entity.layer == "Transfers":
             # Lines on the "Transfers" layer become transfer paths rather
@@ -98,6 +106,19 @@ for entity in dxf.entities:
                 stroke_width="%fpx" % (station_radius * 2.0),
             ))
             continue
+
+        if entity.layer == "Outline":
+            for coord in (entity.start, entity.end):
+                if coord[0] < outline_coords[0]:
+                    outline_coords[0] = coord[0]
+                if coord[1] < outline_coords[1]:
+                    outline_coords[1] = coord[1]
+                if coord[0] > outline_coords[2]:
+                    outline_coords[2] = coord[0]
+                if coord[1] > outline_coords[3]:
+                    outline_coords[3] = coord[1]
+            continue
+
         path_data = "M %f,%f L %f,%f" % (
             entity.start[0], entity.start[1],
             entity.end[0], entity.end[1],
@@ -184,6 +205,13 @@ for entity in dxf.entities:
         namegrp.add(textelem)
     else:
         print "Don't know what to do with %r" % entity
+
+width = outline_coords[2] - outline_coords[0]
+height = outline_coords[3] - outline_coords[1]
+svg.attribs["viewBox"] = "%f %f %f %f" % (
+    outline_coords[0], outline_coords[1],
+    width, height,
+)
 
 outf = open('map.svg', 'w')
 svg.write(outf)
