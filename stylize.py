@@ -55,6 +55,8 @@ stopsym.add(svg.rect(
 svg.add(stopsym)
 
 outergrp = svg.g(transform="scale(1,-1)")
+seagrp = svg.g(id="sea")
+coastlinegrp = svg.g(id="coastlines")
 linegrp = svg.g(id="lines")
 linehollowgrp = svg.g(id="linehollows")
 stngrp = svg.g(id="stations")
@@ -62,6 +64,8 @@ transfergrp = svg.g(id="transfers")
 transferhollowgrp = svg.g(id="transferhollows")
 namegrp = svg.g(id="names")
 
+outergrp.add(seagrp)
+outergrp.add(coastlinegrp)
 outergrp.add(linegrp)
 outergrp.add(linehollowgrp)
 outergrp.add(stngrp)
@@ -83,7 +87,48 @@ for entity in dxf.entities:
     vehicleclass = "trolley" if entity.linetype == "DASHED" else "lrv"
 
     if entity.layer in ("Coastline", "Nature"):
-        # Don't know how to render these yet
+        if isinstance(entity, dxfgrabber.entities.LWPolyline):
+
+            points = list(entity.points)
+            points.append(points[0])  # close the path
+            bulge = list(entity.bulge)
+            bulge.append(0.0)
+
+            path_parts = []
+            first = True
+            last_bulge = 0
+            last_point = (0, 0)
+            for point, bulge in zip(points, bulge):
+                if first:
+                    path_parts.append("M %f,%f" % point)
+                    first = False
+                else:
+                    if last_bulge:
+                        delta = (
+                            point[0] - last_point[0],
+                            point[1] - last_point[1],
+                        )
+                        length = math.sqrt(delta[0] ** 2 + delta[1] ** 2)
+                        radius = abs(length * (last_bulge ** 2 + 1) / last_bulge / 4)
+                        path_parts.append("A %f,%f 0 0,%i %f,%f" % (
+                            radius, radius,
+                            0 if last_bulge < 0 else 1,
+                            point[0], point[1],
+                        ))
+                    else:
+                        path_parts.append("L %f,%f" % point)
+
+                last_bulge = bulge
+                last_point = point
+
+            path_data = "\n".join(path_parts)
+            coastlinegrp.add(svg.path(
+                path_data,
+                class_="coastline",
+            ))
+        else:
+            #print "Coastline/Nature may only contain polylines, not %r" % entity
+            pass
         continue
 
     if isinstance(entity, dxfgrabber.entities.Line):
@@ -211,6 +256,11 @@ svg.attribs["viewBox"] = "%f %f %f %f" % (
     outline_coords[0], outline_coords[1],
     width, height,
 )
+seagrp.add(svg.rect(
+    insert=(outline_coords[0], outline_coords[1]),
+    size=(width, height),
+    class_="water",
+))
 
 outf = open('map.svg', 'w')
 svg.write(outf)

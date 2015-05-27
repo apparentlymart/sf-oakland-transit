@@ -38,7 +38,11 @@
 
 .coastline {
     stroke: none;
-    fill: #eeeeee;
+    fill: #fefefe;
+}
+.water {
+    stroke: none;
+    fill: #ddefef;
 }
 
 .line-A {
