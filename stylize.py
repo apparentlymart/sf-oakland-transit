@@ -70,12 +70,11 @@ outergrp.add(transferhollowgrp)
 outergrp.add(namegrp)
 svg.add(outergrp)
 
+outline_coords = [0, 0, 0, 0]
+
 
 def px(val):
     return "%fpx" % val
-
-
-outline_coords = [0, 0, 0, 0]
 
 
 for entity in dxf.entities:

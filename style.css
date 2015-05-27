@@ -36,6 +36,11 @@
     fill: none;
 }
 
+.coastline {
+    stroke: none;
+    fill: #eeeeee;
+}
+
 .line-A {
     stroke: #0098D4;
 }
