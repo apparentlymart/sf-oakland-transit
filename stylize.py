@@ -57,8 +57,12 @@ svg.add(svg.style(css_source))
 
 stationsym = svg.symbol(id="station")
 stationsym.add(svg.circle(
-    r="%fpx" % station_radius,
+    r="%fpx" % (line_thickness * 0.5),
     class_="station",
+))
+stationsym.add(svg.circle(
+    r="%fpx" % station_radius,
+    class_="stationhollow",
 ))
 svg.add(stationsym)
 
