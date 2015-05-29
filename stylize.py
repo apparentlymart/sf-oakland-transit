@@ -3,31 +3,47 @@ import dxfgrabber
 import svgwrite
 import math
 
-# We use DXF colors as a proxy for line designation.
-# These don't necessarily match the colors we'll use in the final
-# rendered map, but they are kept close for ease of editing.
-line_color_map = {
-    5: "A",
-    3: "B",
-    7: "G",
-    2: "K",
-    6: "S",
-    1: "T",
-    56: "U",
-    211: "V",
-    40: "R",
-    4: "C",
-    253: "E",
-    136: "F",
-    176: "J",
-    9: "L",
-    16: "M",
-    8: "N",
-    216: "O",
-}
 
 dxf = dxfgrabber.readfile("map.dxf")
 svg = svgwrite.Drawing()
+
+
+class Line(object):
+
+    def __init__(self, letter, dxf_color):
+        self.letter = letter
+        self.dxf_color = dxf_color
+        self.line_svg_layer = svg.g(id="line-" + letter)
+        self.hollow_svg_layer = svg.g(id="line-" + letter + "-hollow")
+
+
+# We use DXF colors as a proxy for line designation.
+# These don't actually match the colors we use in the final
+# rendered map.
+# The order in this list dictates the layering order in the
+# map rendering, with the first item deepest.
+line_stack = [
+    Line("T", 1),
+    Line("L", 9),
+    Line("A", 5),
+    Line("B", 3),
+    Line("K", 2),
+    Line("R", 40),
+    Line("U", 56),
+    Line("S", 6),
+    Line("V", 211),
+    Line("E", 253),
+    Line("F", 136),
+    Line("J", 176),
+    Line("N", 8),
+]
+
+line_by_dxf_color = {}
+line_by_letter = {}
+
+for line in line_stack:
+    line_by_letter[line.letter] = line
+    line_by_dxf_color[line.dxf_color] = line
 
 # We assume that the line thickness is the same as the DXF grid size,
 # thus causing concurrent lines to exactly abut one another.
@@ -57,8 +73,6 @@ svg.add(stopsym)
 outergrp = svg.g(transform="scale(1,-1)")
 seagrp = svg.g(id="sea")
 coastlinegrp = svg.g(id="coastlines")
-linegrp = svg.g(id="lines")
-linehollowgrp = svg.g(id="linehollows")
 stngrp = svg.g(id="stations")
 transfergrp = svg.g(id="transfers")
 transferhollowgrp = svg.g(id="transferhollows")
@@ -66,8 +80,9 @@ namegrp = svg.g(id="names")
 
 outergrp.add(seagrp)
 outergrp.add(coastlinegrp)
-outergrp.add(linegrp)
-outergrp.add(linehollowgrp)
+for line in line_stack:
+    outergrp.add(line.line_svg_layer)
+    outergrp.add(line.hollow_svg_layer)
 outergrp.add(stngrp)
 outergrp.add(transfergrp)
 outergrp.add(transferhollowgrp)
@@ -83,7 +98,7 @@ def px(val):
 
 for entity in dxf.entities:
     color = entity.color
-    line_letter = line_color_map.get(color, "invalid")
+    line = line_by_dxf_color.get(color, None)
     vehicleclass = "trolley" if entity.linetype == "DASHED" else "lrv"
 
     if entity.layer in ("Coastline", "Nature"):
@@ -163,16 +178,20 @@ for entity in dxf.entities:
                     outline_coords[3] = coord[1]
             continue
 
+        if line is None:
+            print "Can't make route drawing for unknown line with color %i" % color
+            continue
+
         path_data = "M %f,%f L %f,%f" % (
             entity.start[0], entity.start[1],
             entity.end[0], entity.end[1],
         )
-        linegrp.add(svg.path(
+        line.line_svg_layer.add(svg.path(
             path_data,
-            class_="line line-%s %s" % (line_letter, vehicleclass),
+            class_="line line-%s %s" % (line.letter, vehicleclass),
             stroke_width="%fpx" % line_thickness,
         ))
-        linehollowgrp.add(svg.path(
+        line.hollow_svg_layer.add(svg.path(
             path_data,
             class_="linehollow linehollow-%d %s" % (color, vehicleclass),
         ))
@@ -189,18 +208,22 @@ for entity in dxf.entities:
             entity.endangle += 360.0
         large_arc = (entity.endangle - entity.startangle) > 180
 
+        if line is None:
+            print "Can't make route drawing for unknown line with color %i" % color
+            continue
+
         path_data = "M %f,%f A %f,%f 0 %s,1 %f,%f" % (
             x1, y1,
             entity.radius, entity.radius,
             "1" if large_arc else "0",
             x2, y2,
         )
-        linegrp.add(svg.path(
+        line.line_svg_layer.add(svg.path(
             path_data,
-            class_="line line-%s %s" % (line_letter, vehicleclass),
+            class_="line line-%s %s" % (line.letter, vehicleclass),
             stroke_width="%fpx" % line_thickness,
         ))
-        linehollowgrp.add(svg.path(
+        line.hollow_svg_layer.add(svg.path(
             path_data,
             class_="linehollow linehollow-%d %s" % (color, vehicleclass),
         ))
