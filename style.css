@@ -37,62 +37,60 @@
 }
 
 .coastline {
-    stroke: none;
+    stroke: #a1beff;
+    stroke-width: 0.5px;
     fill: #fefefe;
 }
 .water {
     stroke: none;
-    fill: #ddefef;
+    fill: #c9defe;
 }
 
 .line-A {
-    stroke: #0098D4;
+    stroke: #00A0E2;
 }
 .line-B {
-    stroke: #00782A;
-}
-.line-G {
-    stroke: #000000;
+    stroke: #E87511;
 }
 .line-K {
-    stroke: #FFD300;
+    stroke: #D799AF;
 }
 .line-R {
-    stroke: #EE7C0E;
+    stroke: #751056;
 }
 .line-S {
-    stroke: #9B0056;
+    stroke: #007229;
 }
 .line-T {
-    stroke: #E32017;
+    stroke: #894E24;
 }
 .line-U {
-    stroke: #B36305;
+    stroke: #DC241F;
 }
 .line-V {
-    stroke: #F3A9BB;
+    stroke: #FFCE00;
 }
 
 .line-C {
     stroke: #95CDBA;
 }
 .line-E {
-    stroke: #A0A5A9;
+    stroke: #0019a8;
 }
 .line-F {
-    stroke: #00A4A7;
+    stroke: #00a4a7;
 }
 .line-J {
-    stroke: #003688;
+    stroke: #86c141;
 }
 .line-L {
-    stroke: #84B817;
+    stroke: #A0A5A9;
 }
 .line-M {
     stroke: #E21836;
 }
 .line-N {
-    stroke: #66CCCC;
+    stroke: #00a4a7;
 }
 .line-O {
     stroke: #7156A5;
